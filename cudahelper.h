@@ -17,7 +17,6 @@ __global__ void PRAdd(float *PR, const float* Grap, const float * sumOfOutDegree
 
             }
             k++;
-            //printf("%f\n", sum);
         } 
         PR[i] = Alpha  + (1 - Alpha)*sum;
     }
@@ -43,18 +42,18 @@ __global__ void calcfreq(int *dva,int *dfreq,long long siz)
 {
 	
 	int i = threadIdx.x + blockIdx.x * blockDim.x;
-		int stride = blockDim.x * gridDim.x;
-  while (i < siz)
-  {
-          atomicAdd( &(dfreq[dva[i]]), 1 );
+	int stride = blockDim.x * gridDim.x;
+  	while (i < siz)
+  	{
+              atomicAdd( &(dfreq[dva[i]]), 1 );
               i += stride;
-  }
+  	}
 	
 }
 
 __global__ void mul(float *dans,int *dfreq,float *d_PR)
-		{
-		int i=blockIdx.x * blockDim.x + threadIdx.x;
+{
+	int i=blockIdx.x * blockDim.x + threadIdx.x;
 
 	if(i<numberOfVertex)
 	{
@@ -79,8 +78,8 @@ __global__ void thresh(float *d_graph,float *dans,int thr)
 	
 	}
 }
-//END condition: when the PR value stable
 
+//END condition: when the PR value stable
 bool END(float a[], float b[])
 {
     float sum = 0;

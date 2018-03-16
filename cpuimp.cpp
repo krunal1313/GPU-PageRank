@@ -25,7 +25,7 @@ void PageRank(float *Grap, float PR[])
     float *PR_Temp=new float[numberOfVertex ];
 
     //begin = clock();
-    int iter = 0;  //迭代次数
+    int iter = 0; 
     for (int m = 0; m < Max_Iteration_Number; ++m)
     {
         iter++;
@@ -82,8 +82,6 @@ void PageRank(float *Grap, float PR[])
 
     }
     //end = clock();
-  //  printf("Calculate %d iteration of PageRank value cost us:%d ms.\n",iter, end - begin);
-
 }
 
 
@@ -93,17 +91,12 @@ int main(int argc,char *argv[])
     char ch;
     int source = 0;
     int dist = 0;
-    //int vertex = 5000;
 
-
-	  ifstream fp;
-	  fp.open("f1.txt");
-	ofstream op;
-	  //of.open("Pagerank.txt");
+    ifstream fp;
+    fp.open("f1.txt");
+    ofstream op;
 	
     float *Grap=new float[numberOfVertex*numberOfVertex];
-	//for(int i=0;i<numberOfVertex;i++)
-	//	Graph[i]=new float[numberOfVertex];
 
     float *PR=new float[numberOfVertex];
 //	#pragma omp parallel for
@@ -123,49 +116,45 @@ int main(int argc,char *argv[])
 	string ip;
 	string tok,tokk;
 	
-    while (getline(fp,ip)){
+    while (getline(fp,ip))
+    {
 
-		istringstream iss(ip);
+	istringstream iss(ip);
         iss >>source>>dist;
        // std::cout << source<< ' '<< dist<< std::endl;
 		
         Grap[(source-1)*numberOfVertex+(dist-1)]=1;
     	Grap[(dist-1)*numberOfVertex+(source-1)]=1;
-	}
+    }
+    
     printf("Graph build complete.\n");
 
     //invoke PageRank.
     b1=clock();
-	PageRank(Grap, PR);
-	e1=clock();
+    PageRank(Grap, PR);
+    e1=clock();
 
     //output to file PageRankValue.txt
 	//#pragma omp parallel
-    /*for (int i = 0; i < numberOfVertex; ++i)
+    fp.close();
+    fp.open("genes");
+    map<string,int>gen;
+    while(getline(fp,ip))
     {
-        of<< i <<" "<< PR[i] << endl;
+	    istringstream iss(ip);
+	    iss>>source>>tok;
+	    gen.insert(pair<string,int>(tok,source-1));
     }
-    //printf("%f\n", Graph[0][0]);
-	*/
-	fp.close();
-	fp.open("genes");
-	map<string,int>gen;
-	while(getline(fp,ip))
-	{
-		istringstream iss(ip);
-		iss>>source>>tok;
-		gen.insert(pair<string,int>(tok,source-1));
-	}
 	
-	fp.close();
+    fp.close();
 	
-	for(int i=0;i<atoi(argv[1]);i++)
-	{
+    for(int i=0;i<atoi(argv[1]);i++)
+    {
 	fp.open(argv[2+i]);
 	map<string,int>::iterator it;
 	
 	float *freq=new float[numberOfVertex];
-	vector<int>v;
+	vector<int> v;
 //	ofstream tp;
 //	tp.open("vf.txt");
 	
@@ -235,48 +224,22 @@ int main(int argc,char *argv[])
 	free(ans);
 	free(freq);
 
-}
+    }
 	e4=clock();
-		/*int cnt;
-		op.open("result1.txt");
-		vector<int>vi;
+		
+	freopen("subnets.txt","w",stdout);
+	Graph g(numberOfVertex);
+//		#pragma omp parallel for
+	for(int j=0;j<numberOfVertex;j++)
+	{
 		for(int i=0;i<numberOfVertex;i++)
 		{
-			cnt=0;
-			vi.clear();
-			
-			for(int j=0;j<numberOfVertex;j++)
-			{
-				if(Graph[i*numberOfVertex+j]==1)
-				{
-					cnt++;
-					vi.push_back(j);
-				}
-				
-			}
-			if(cnt>=3)
-			{
-				op<<i<<" : ";
-				for(int k=0;k<vi.size();k++)
-				op<<vi[k]<<" ";
-				
-				op<<endl;
-			}
-		 } 
-	*/
-	freopen("subnets.txt","w",stdout);
-		Graph g(numberOfVertex);
-//		#pragma omp parallel for
-		for(int j=0;j<numberOfVertex;j++)
-			{
-				for(int i=0;i<numberOfVertex;i++)
-				{
-					if(Grap[i*numberOfVertex+j]==1)
-						g.addEdge(i,j);
+			if(Grap[i*numberOfVertex+j]==1)
+				g.addEdge(i,j);
 					
-				}			
-			}	
+		}			
+	}	
+	
 	g.printSCCs();
 	cout<<"Total time :"<<(double)(e1-b1+e2-b2+e3-b3+e4-b4)/CLOCKS_PER_SEC;
-    //getchar();
 }
